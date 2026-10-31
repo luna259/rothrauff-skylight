@@ -6,9 +6,54 @@
   <title>Rothrauff Outdoor</title>
   <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src http://127.0.0.1:8001; object-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'">
   <link rel="stylesheet" href="css/app.css">
+  <link rel="stylesheet" href="css/store.css">
 </head>
 <body>
-  <div id="storeDisplay" class="store-display" role="region" aria-label="Store display"><h1>Rothrauff Outdoor</h1></div>
+  <div id="storeDisplay" class="store-display" role="region" aria-label="Rothrauff Outdoor showroom">
+    <div id="storeCanvas" class="store-canvas theme-ride">
+      <header class="store-header">
+        <div class="store-wordmark"><svg viewBox="0 0 64 64" aria-hidden="true"><path d="M5 51 25 16l12 20 8-13 15 28" fill="none" stroke="currentColor" stroke-width="5" stroke-linejoin="round"/><path d="m19 27 6 7 6-7" fill="none" stroke="currentColor" stroke-width="4"/></svg><div>ROTHRAUFF<span>OUTDOOR</span></div></div>
+        <div class="store-welcome">YOUR NEXT ADVENTURE STARTS HERE<span>Altoona, Pennsylvania</span></div>
+      </header>
+      <main class="store-hero">
+        <div class="store-copy"><p id="storeEyebrow" class="store-eyebrow">A LITTLE ASSIST. A LOT OF ADVENTURE.</p><h1 id="storeHeadline">Find your<br><em>happy gear.</em></h1><p id="storeSubline" class="store-subline">More fresh air. More smiles. More reasons to ride.</p><div class="store-callout"><span class="store-arrow">↗</span><span id="storeCallout">Find your ride. Ask us about a test ride.</span></div></div>
+        <div class="store-art" aria-hidden="true">
+          <svg class="adventure-scene" viewBox="0 0 900 600">
+            <defs><clipPath id="sceneMask"><rect x="12" y="12" width="876" height="576" rx="160"/></clipPath></defs>
+            <g clip-path="url(#sceneMask)">
+              <rect width="900" height="600" fill="var(--scene-sky)"/>
+              <circle class="scene-sun" cx="675" cy="150" r="103" fill="var(--scene-sun)"/>
+              <path d="M-50 375 185 111 432 386 613 242 960 477V650H-50Z" fill="var(--scene-far)"/>
+              <path d="m129 174 56-63 63 70-41-13-22 16-27-14Z" fill="#fff4db"/>
+              <path d="M-80 423C120 280 286 350 448 411S749 295 980 363V660H-80Z" fill="var(--scene-mid)"/>
+              <path d="M-50 530C144 375 403 515 586 443S816 400 960 467V650H-50Z" fill="var(--scene-near)"/>
+              <path d="M337 620C539 569 666 529 569 498S343 494 421 453 568 424 551 407" fill="none" stroke="#f9e9bd" stroke-width="34"/>
+              <g fill="var(--scene-tree)"><path d="m79 280-53 112h106Z"/><path d="m79 321-70 133h140Z"/><rect x="73" y="405" width="12" height="75"/><path d="m807 276-58 123h116Z"/><path d="m807 329-75 140h150Z"/><rect x="800" y="420" width="14" height="90"/></g>
+              <g class="scene-bike" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <g stroke="#152d2e" stroke-width="15"><circle cx="333" cy="405" r="82" fill="#f7ead4"/><circle cx="641" cy="405" r="82" fill="#f7ead4"/></g>
+                <g stroke="#b2c6ba" stroke-width="3"><path d="m333 323v164m-82-82h164m168-58 116 116m-116 0 116-116m-58-24v164m-82-82h164m-366-58 116 116m-116 0 116-116"/></g>
+                <g stroke="#f76d42" stroke-width="17"><path d="m333 405 96-151 69 151H333l238-151 70 151"/><path d="m413 223 85 182"/><path d="m571 254-14-52h54"/></g>
+                <path d="M389 222h69" stroke="#152d2e" stroke-width="16"/>
+                <circle cx="498" cy="405" r="15" fill="#152d2e" stroke="#152d2e" stroke-width="5"/><path d="m498 405 30 29h23" stroke="#152d2e" stroke-width="8"/>
+                <path d="m463 282 27 49" stroke="#f9e9bd" stroke-width="21"/>
+              </g>
+              <g class="scene-outdoors">
+                <path d="M155 415c115-35 333-39 460-5-35 68-371 84-460 5Z" fill="#f76d42" stroke="#203d38" stroke-width="8"/>
+                <path d="m286 341 142 109" stroke="#f6edda" stroke-width="13" stroke-linecap="round"/>
+                <path d="m249 313 54 15 16 29-46-5Z" fill="#fff5df"/><path d="m414 428 45 8 20 31-50-14Z" fill="#fff5df"/>
+                <path d="M553 336a78 78 0 0 1 156 0Z" fill="#ed6a3b" stroke="#233c33" stroke-width="8"/><path d="M559 341h144v22H559Z" fill="#223c33"/><path d="m583 363-16 89m109-89 16 89" stroke="#233c33" stroke-width="10"/><path d="M620 239c-20-19 26-28 4-52m40 53c-20-19 26-28 4-52" fill="none" stroke="#fff5df" stroke-width="9" stroke-linecap="round"/>
+                <g transform="translate(90 82)"><rect x="114" y="185" width="108" height="64" rx="25" fill="#f3d465" stroke="#233c33" stroke-width="7"/><circle cx="130" cy="245" r="14" fill="#233c33"/><circle cx="205" cy="245" r="14" fill="#233c33"/><path d="M156 197h34" stroke="#233c33" stroke-width="5"/></g>
+              </g>
+              <path d="m750 90 7 15 16 3-12 11 2 17-13-8-15 8 3-17-13-11 17-3Z" fill="#fff5df"/>
+            </g>
+          </svg>
+          <div class="store-sticker"><span id="storeStickerTop">LESS SCROLL.</span><strong id="storeStickerBottom">MORE ROLL.</strong><svg viewBox="0 0 48 24"><path d="M5 6q19 25 38 0" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg></div>
+        </div>
+      </main>
+      <section class="store-brands" aria-label="Brands we carry"><div class="brand-heading"><p id="storeBrandHeading">BIG NAMES. EVEN BETTER RIDES.</p><div class="store-pages" aria-label="Display pages"><span class="is-active"></span><span></span><span></span></div></div><div id="storeBrandGrid" class="store-brand-grid"></div></section>
+      <footer class="store-footer"><span>E-BIKES <b>✦</b> ROBOTIC MOWERS <b>✦</b> KAYAKS <b>✦</b> GRILLS <b>✦</b> SUNGLASSES</span><strong>ebikesaltoona.com</strong></footer>
+    </div>
+  </div>
   <div id="screen" class="screen">
     <!-- The scenery is drawn once a minute. The only things that move on their own are a few tiny
          stars, the fireflies, the aurora's slow drift, the water's shimmer, and the odd bird or
@@ -110,6 +155,7 @@
   <script src="js/catalog.js"></script>
   <script src="js/mock-tizen.js"></script>
   <script src="js/scenery.js"></script>
+  <script src="js/store.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>
