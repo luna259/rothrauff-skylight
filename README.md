@@ -1,3 +1,19 @@
+# Rothrauff Outdoor — Skylight fork
+
+A Samsung Tizen launcher with a retail screen that says **Rothrauff Outdoor**.
+Press Down or OK to show app controls; Back returns to the store display.
+
+Security changes, remaining risks and rollback: [SECURITY.md](SECURITY.md).
+Build: `python3 tools/build-widget.py`. Tests: `node --test tests/security.test.cjs`.
+Installation and exact-model behavior remain unverified until documented below.
+No SmartThings rules are created by this build or installer.
+
+The following is the upstream guide. References to HTTP helper diagnostics,
+original packaging, automatic startup, and tested TVs describe upstream behavior;
+see SECURITY.md for the changes and limitations of this fork.
+
+---
+
 <p align="center">
   <img src="docs/images/banner.jpg" alt="Skylight. A home screen for Samsung TVs. No root, no Android box, no ads. A painted lake at golden hour, the sun setting behind the mountains." width="100%">
 </p>

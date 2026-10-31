@@ -21,3 +21,10 @@ launch/
 # OS noise
 Thumbs.db
 .DS_Store
+
+# Local installers, certificates and TV-specific records
+.local/
+*.p12
+*.pem
+*.key
+.env*
