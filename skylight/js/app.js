@@ -70,17 +70,7 @@
     var panel = byId('diary');
     panel.textContent = 'What Skylight noticed, newest first (press Up three times to close)\n\n' +
       diary.slice(-16).reverse().join('\n');
-    helperGet('log', function (text) {
-      if (panel.hidden) return;
-      var helper = 'helper: not reachable on its port';
-      try {
-        var info = JSON.parse(text);
-        helper = (info.watching ? 'helper: watching ' + info.watching : 'helper: standing guard') +
-          (info.paused ? ' (leaving Samsung’s screen alone for now)' : '') + ', up since ' + info.since + '\n' +
-          info.lines.slice(-14).reverse().join('\n');
-      } catch (e) { /* no answer */ }
-      panel.textContent += '\n\n' + helper;
-    });
+    panel.textContent += '\n\nHelper uses Tizen IPC only; HTTP diagnostics are disabled.';
   }
 
   function toggleDiary() {
@@ -280,7 +270,7 @@
     el.style.setProperty('--shadow', rgba(app.glow, 0.5));
     el.style.setProperty('--i', String(index));
 
-    var src = app.icon || (app.tvIcon ? (/^[a-z]+:/i.test(app.tvIcon) ? app.tvIcon : 'file://' + app.tvIcon) : '');
+    var src = /^icons\/[A-Za-z0-9_-]+\.(?:png|svg)$/.test(app.icon) ? app.icon : '';
     if (src) {
       var img = new Image();
       img.className = 'tile-img';
@@ -462,6 +452,12 @@
   }
 
   document.addEventListener('keydown', function (e) {
+    var storeDisplay = byId('storeDisplay');
+    if (!storeDisplay.hidden) {
+      if (e.keyCode === KEY.DOWN || e.keyCode === KEY.ENTER) storeDisplay.hidden = true;
+      if ([KEY.LEFT,KEY.UP,KEY.RIGHT,KEY.DOWN,KEY.ENTER,KEY.BACK,KEY.ESCAPE].indexOf(e.keyCode) >= 0) e.preventDefault();
+      return;
+    }
     if (launching) { e.preventDefault(); return; }
     // Up has nothing to do on the top row, so three in a row opens the diagnostics.
     if (e.keyCode === KEY.UP && focus.row === 0 && !moving && !menu) {
@@ -486,6 +482,7 @@
         // This is the home screen, so Back only closes the menu or cancels a move.
         if (menu) closeMenu();
         else if (moving) cancelMoving();
+        else byId('storeDisplay').hidden = false;
         break;
       default:
         return;
@@ -519,21 +516,12 @@
     captionNote.textContent = 'Press Home on the remote. Samsung’s screen will stay for 3 minutes.';
   }
 
-  var helperChecks = 0;
-
   function tellHelperToGuard() {
     var shown = [];
     rows.forEach(function (row) { row.items.forEach(function (it) { if (!it.special) shown.push(it.id); }); });
     tellHelper({ cmd: 'guard', shown: shown.join(',') },
-      null, function (err) { note('helper would not start (' + (err && err.name) + ')'); });
-    // A few seconds later, make sure it is actually up; ask again a couple of times if not.
-    setTimeout(function () {
-      helperGet('log', function (text) {
-        if (text) { if (!helperChecks) note('helper is up'); helperChecks = 0; return; }
-        if (++helperChecks <= 3) { note('helper not reachable yet; asking it to start again (' + helperChecks + ')'); tellHelperToGuard(); }
-        else note('helper is not running; Skylight handles returns by itself');
-      });
-    }, 5000);
+      function () { note('helper request delivered through Tizen IPC'); },
+      function (err) { note('helper unavailable; using foreground fallback'); });
   }
 
   // ---- Hold-OK menu: move or hide ------------------------------------------------------------
@@ -697,40 +685,17 @@
   // own process, so it carries on even if this page is frozen while a heavy app plays. If the
   // helper can't be started, this page does the same checks itself, below.
 
-  var HELPER_URL = 'http://127.0.0.1:8130/';
-
-  // Commands reach the helper two ways: as a service request (which also starts it if it isn't
-  // running) and over its local port. Either is enough; both are tried.
+  // Only Tizen IPC can command the helper; no HTTP control or diagnostics endpoint.
   function tellHelper(data, onDone, onFailed) {
-    var query = [];
-    for (var key in data) query.push(key + '=' + encodeURIComponent(String(data[key])));
-    helperGet(data.cmd + '?' + query.join('&'), function () {});
+    if (window.SKYLIGHT_PREVIEW) { if (onDone) onDone(); return; }
     try {
       var items = [];
-      for (var k in data) items.push(new tizen.ApplicationControlData(k, [String(data[k])]));
+      Object.keys(data).forEach(function (key) {
+        items.push(new tizen.ApplicationControlData(key, [String(data[key])]));
+      });
       var control = new tizen.ApplicationControl('http://tizen.org/appcontrol/operation/service', null, null, null, items);
       tizen.application.launchAppControl(control, HELPER_ID, onDone || function () {}, onFailed || function () {});
-    } catch (e) {
-      if (onFailed) onFailed(e);
-    }
-  }
-
-  function helperGet(path, done) {
-    // The desktop preview and the live demo have no helper, and a web page asking for 127.0.0.1
-    // makes the browser ask for local-network access, so they skip it.
-    if (window.SKYLIGHT_PREVIEW) { setTimeout(function () { done(null); }, 0); return; }
-    var finished = false;
-    function finish(text) { if (!finished) { finished = true; done(text); } }
-    try {
-      var xhr = new XMLHttpRequest();
-      xhr.open('GET', HELPER_URL + path, true);
-      xhr.timeout = 1500;
-      xhr.onload = function () { finish(xhr.status === 200 ? xhr.responseText : null); };
-      xhr.onerror = xhr.ontimeout = xhr.onabort = function () { finish(null); };
-      xhr.send();
-    } catch (e) {
-      finish(null);
-    }
+    } catch (e) { if (onFailed) onFailed(e); }
   }
 
   function askHelper(app) {
@@ -885,7 +850,7 @@
     function finish(state) { if (!finished) { finished = true; done(state); } }
     try {
       var xhr = new XMLHttpRequest();
-      xhr.open('GET', 'http://127.0.0.1:8001/api/v2/applications/' + id, true);
+      xhr.open('GET', 'http://127.0.0.1:8001/api/v2/applications/' + encodeURIComponent(id), true);
       xhr.timeout = 1500;
       try { xhr.setRequestHeader('Cache-Control', 'no-cache'); } catch (e) { /* not allowed here */ }
       xhr.onload = function () {
@@ -940,7 +905,7 @@
       if (screen.classList.contains('is-ready')) restart(byId('time').parentNode, 'is-tick');
     }
     byId('meridiem').textContent = h < 12 ? 'am' : 'pm';
-    byId('greeting').textContent = h >= 5 && h < 12 ? 'Good morning' : h >= 12 && h < 17 ? 'Good afternoon' : 'Good evening';
+    byId('greeting').textContent = 'Rothrauff Outdoor';
     byId('date').textContent = DAYS[now.getDay()] + ' ' + now.getDate() + ' ' + MONTHS[now.getMonth()];
     Scenery.update(now);
     if (currentApp() && !moving) showCaption(currentApp());
@@ -983,6 +948,7 @@
   }
 
   function resume() {
+    byId('storeDisplay').hidden = false;
     clearTimeout(homeCheck);
     stopWatching();
     tellHelper({ cmd: 'stop' });
@@ -1013,7 +979,7 @@
     if (!document.hidden) { resume(); return; }
     if (launching || watch) return; // an app we opened took the screen; the watcher handles it
     hiddenAt = Date.now();
-    helperGet('away', function () {});
+    tellHelper({ cmd: 'away' });
     note('left the screen without opening anything (Home, or standby)');
     scheduleHomeCheck(1);
   });
