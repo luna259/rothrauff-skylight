@@ -1,0 +1,56 @@
+/* Store display: fixed TV layout, bundled assets, only small opacity transitions. */
+.store-display { display:block; background:#f6f1e6; overflow:hidden; }
+.store-display[hidden] { display:none; }
+.store-canvas { position:absolute; top:0; left:0; width:1920px; height:1080px; padding:54px 86px 0; transform-origin:0 0; background:#f6f1e6; color:#183c34; --scene-sky:#d2e5dc; --scene-sun:#f6bb57; --scene-far:#8eafa2; --scene-mid:#4d8371; --scene-near:#275748; --scene-tree:#173f35; }
+.store-header { height:100px; display:flex; align-items:center; justify-content:space-between; border-bottom:2px solid #d9dfd1; padding-bottom:30px; }
+.store-wordmark { display:flex; align-items:center; gap:18px; font-family:Atkinson,Arial,sans-serif; font-size:33px; font-weight:800; letter-spacing:2px; line-height:1; }
+.store-wordmark svg { width:68px; height:68px; }
+.store-wordmark span { display:block; font-size:20px; letter-spacing:10px; margin-top:10px; }
+.store-welcome { text-align:right; font-size:21px; font-weight:700; letter-spacing:2px; }
+.store-welcome span { display:block; margin-top:10px; font-size:23px; letter-spacing:0; font-weight:400; color:#547065; }
+.store-hero { height:528px; position:relative; display:flex; align-items:center; justify-content:space-between; }
+.store-copy { width:900px; padding:25px 0 0 0; position:relative; z-index:2; }
+.store-eyebrow { color:#61786c; font-size:20px; font-weight:700; letter-spacing:3px; margin-bottom:16px; }
+.store-display .store-copy h1 { margin:0; padding:0; font-family:Fraunces,Georgia,serif; font-size:108px; font-weight:700; line-height:.98; white-space:normal; letter-spacing:-4px; text-align:left; }
+.store-copy h1 em { font-style:italic; color:#df663c; font-weight:600; }
+.store-subline { font-size:29px; line-height:1.4; margin-top:22px; max-width:810px; color:#4e695c; }
+.store-callout { display:flex; align-items:center; gap:15px; margin-top:23px; font-size:24px; font-weight:700; }
+.store-arrow { border-radius:50%; display:flex; align-items:center; justify-content:center; width:48px; height:48px; background:#e5ecb4; font-size:35px; }
+.store-art { width:790px; height:500px; position:relative; margin-right:-8px; }
+.adventure-scene { width:790px; height:527px; }
+.scene-bike { display:block; }
+.scene-outdoors { display:none; }
+.store-sticker { position:absolute; right:-9px; bottom:28px; border:2px solid #183c34; border-radius:50%; width:176px; height:176px; background:#ececad; display:flex; flex-direction:column; justify-content:center; align-items:center; transform:rotate(10deg); box-shadow:7px 8px 0 #183c34; font-size:18px; font-weight:800; line-height:1.35; }
+.store-sticker strong { font-size:22px; }
+.store-sticker svg { width:44px; height:24px; margin-top:8px; }
+.store-brands { margin-top:8px; }
+.brand-heading { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; padding-top:4px; }
+.brand-heading p { font-size:22px; font-weight:700; letter-spacing:2px; }
+.store-pages { display:flex; gap:10px; }
+.store-pages span { width:10px; height:10px; border-radius:10px; background:#cbd6c8; }
+.store-pages .is-active { width:38px; background:#df663c; }
+.store-brand-grid { display:flex; gap:18px; height:193px; }
+.store-brand-card { flex:1; min-width:0; border:1px solid #e3e6db; border-radius:18px; background:white; display:flex; align-items:center; justify-content:center; padding:30px 23px; position:relative; }
+.store-brand-card img { width:100%; height:100%; max-height:118px; object-fit:contain; }
+.store-brand-card .brand-fallback { font-size:33px; font-weight:800; }
+.store-brand-card .logo-cannondale { width:140%; max-width:none; height:195px; max-height:none; }
+.store-brand-card .logo-nucanoe { filter:brightness(0); }
+.store-brand-card .logo-maui-jim { filter:brightness(0); }
+.store-footer { position:absolute; bottom:46px; left:86px; right:86px; border-top:2px solid #d9dfd1; padding-top:29px; display:flex; align-items:center; justify-content:space-between; font-size:20px; letter-spacing:1px; color:#4e695c; }
+.store-footer b { color:#df663c; padding:0 11px; font-size:18px; }
+.store-footer strong { color:#183c34; font-size:28px; letter-spacing:0; }
+.theme-trail { --scene-sky:#eadfbf; --scene-sun:#f48d60; --scene-far:#c4b895; --scene-mid:#869a70; --scene-near:#526d48; --scene-tree:#314c34; }
+.theme-outside { --scene-sky:#d7e8eb; --scene-sun:#f4b96a; --scene-far:#a5c5c4; --scene-mid:#6aa3a2; --scene-near:#327c7f; --scene-tree:#275c55; }
+.theme-outside .scene-bike { display:none; }
+.theme-outside .scene-outdoors { display:block; }
+@media(prefers-reduced-motion:reduce) { .store-canvas * { animation:none!important; transition:none!important; } }
+
+.store-brand-card .logo-bakcou { filter:brightness(0); }
+.store-brand-card.icon-brand { flex-direction:column; gap:9px; }
+.store-brand-card .logo-addmotor { max-height:83px; width:90px; }
+.brand-caption { font-size:24px; color:#202020; font-weight:800; letter-spacing:1px; }
+/* Keep supplied brand colors and compensate for whitespace in supplied artwork. */
+.store-brand-card { overflow:hidden; }
+.store-brand-card .logo-nucanoe { filter:none; }
+.store-brand-card .logo-masterbuilt { filter:brightness(0); }
+.store-brand-card .logo-maui-jim { width:1080px; height:225px; max-height:none; max-width:none; flex-shrink:0; }
