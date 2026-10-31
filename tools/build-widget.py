@@ -6,8 +6,16 @@ root = Path(__file__).resolve().parent.parent
 src = root / 'skylight'
 out = root / 'dist' / 'RothrauffOutdoor.wgt'
 ET.parse(src / 'config.xml')
+# Fail before signing if the offline showroom would contain missing/changed logos.
+brand_manifest = src / 'brands' / 'sources.json'
+if brand_manifest.exists():
+    for entry in json.loads(brand_manifest.read_text()):
+        asset = src / 'brands' / entry['file']
+        if not asset.is_file() or hashlib.sha256(asset.read_bytes()).hexdigest() != entry['sha256']:
+            raise ValueError('Brand artwork missing or changed: ' + entry['brand'] + '; run tools/fetch-store-brands.py')
+
 out.parent.mkdir(exist_ok=True)
-files = [p for p in src.rglob('*') if p.is_file() and p.name != 'mock-tizen.js']
+files = [p for p in src.rglob('*') if p.is_file() and p.name not in ('mock-tizen.js', 'sources.json')]
 with zipfile.ZipFile(out, 'w', zipfile.ZIP_DEFLATED) as z:
     for p in sorted(files):
         rel = p.relative_to(src).as_posix()
