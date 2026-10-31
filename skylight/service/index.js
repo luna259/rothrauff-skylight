@@ -10,15 +10,13 @@
 // checking that no other app took the screen instead. If the status service won't answer, the
 // list of running apps is used instead.
 //
-// It also listens on 127.0.0.1:8130 for the same commands, and serves its recent log there, so
-// the home screen's diagnostics panel can show what the helper saw.
+// Commands arrive only through Tizen app-control IPC from our own foreground app.
+// No HTTP listener or cross-origin control endpoint is exposed.
 'use strict';
 
 var http = require('http');
-var url = require('url');
 
 var SKYLIGHT = 'skylightTV.Skylight';
-var PORT = 8130;
 var MAX_WATCH_MS = 3 * 60 * 60 * 1000;
 var job = null; // { appId, shown, baseline, mode, seen, hiddenSince, busy, stops, started, timer }
 var lines = [];
@@ -40,7 +38,10 @@ function get(port, path, done) {
   var req = http.get({ host: '127.0.0.1', port: port, path: path, headers: { 'Cache-Control': 'no-cache' } }, function (res) {
     var body = '';
     res.setEncoding('utf8');
-    res.on('data', function (chunk) { body += chunk; });
+    res.on('data', function (chunk) {
+      if (body.length + chunk.length > 65536) { req.abort(); finish(0, ''); return; }
+      body += chunk;
+    });
     res.on('end', function () { finish(res.statusCode, body); });
   });
   req.setTimeout(1500, function () { req.abort(); finish(0, ''); });
@@ -49,7 +50,8 @@ function get(port, path, done) {
 
 // The TV's own status for one app: { running, visible }, or null if it won't say.
 function appState(appId, done) {
-  get(8001, '/api/v2/applications/' + appId, function (status, body) {
+  if (!validAppId(appId)) { done(null); return; }
+  get(8001, '/api/v2/applications/' + encodeURIComponent(appId), function (status, body) {
     try {
       var info = JSON.parse(body);
       done(status === 200 && typeof info.running === 'boolean' ? { running: info.running, visible: !!info.visible } : null);
@@ -284,6 +286,18 @@ function unique(list) {
 
 // ---- Commands --------------------------------------------------------------------------------
 
+function validAppId(id) {
+  return typeof id === 'string' && /^[A-Za-z0-9_][A-Za-z0-9_.-]{0,127}$/.test(id);
+}
+function validCommand(params) {
+  if (!params || ['watch', 'stop', 'guard', 'pause', 'away'].indexOf(params.cmd) < 0) return false;
+  if (params.cmd === 'watch' && !validAppId(params.app)) return false;
+  if (params.shown !== undefined && (params.shown.length > 32768 ||
+      (params.shown !== '' && !params.shown.split(',').every(validAppId)) ||
+      params.shown.split(',').length > 256)) return false;
+  if (params.cmd === 'pause' && !/^(?:[1-9][0-9]{0,2}|1[0-7][0-9]{2}|1800)$/.test(params.seconds || '')) return false;
+  return true;
+}
 function handle(cmd, params) {
   if (cmd === 'watch' && params.app) {
     if (params.shown) guard.shown = params.shown.split(',');
@@ -307,49 +321,38 @@ function handle(cmd, params) {
 }
 
 function readRequest() {
-  var out = {};
   try {
-    var data = tizen.application.getCurrentApplication().getRequestedAppControl().appControl.data;
-    data.forEach(function (item) { out[item.key] = item.value[0]; });
-  } catch (e) {
-    log('no request data: ' + e.name);
-  }
-  return out;
+    var request = tizen.application.getCurrentApplication().getRequestedAppControl();
+    // Fail closed if this firmware does not expose the OS-provided caller identity.
+    if (!request || request.callerAppId !== SKYLIGHT || !request.appControl ||
+        request.appControl.operation !== 'http://tizen.org/appcontrol/operation/service') return null;
+    var data = request.appControl.data;
+    if (!Array.isArray(data) || data.length > 4) return null;
+    var out = {};
+    for (var i = 0; i < data.length; i++) {
+      var item = data[i];
+      if (['cmd', 'app', 'shown', 'seconds'].indexOf(item.key) < 0 ||
+          Object.prototype.hasOwnProperty.call(out, item.key) || !Array.isArray(item.value) ||
+          item.value.length !== 1 || typeof item.value[0] !== 'string' || item.value[0].length > 32768) return null;
+      out[item.key] = item.value[0];
+    }
+    return validCommand(out) ? out : null;
+  } catch (e) { return null; }
 }
-
-var server = http.createServer(function (req, res) {
-  var parsed = url.parse(req.url, true);
-  var path = parsed.pathname.replace(/^\/+/, '');
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Cache-Control', 'no-store');
-  if (path === 'log') {
-    res.setHeader('Content-Type', 'application/json');
-    res.end(JSON.stringify({ watching: job ? job.appId : '', paused: Date.now() < guard.pausedUntil, since: startedAt, lines: lines }));
-    return;
-  }
-  if (path === 'watch' || path === 'stop' || path === 'guard' || path === 'pause' || path === 'away') {
-    handle(path, parsed.query);
-    res.end('ok');
-    return;
-  }
-  res.statusCode = 404;
-  res.end('not found');
-});
-server.on('error', function (e) { log('could not listen on port ' + PORT + ': ' + e.message); });
 
 module.exports = {
   onStart: function () {
     var t = new Date();
     startedAt = t.toDateString().slice(0, 10) + ' ' + t.toTimeString().slice(0, 8);
     log('started');
-    try { server.listen(PORT, '127.0.0.1', function () { log('listening on 127.0.0.1:' + PORT); }); } catch (e) { log('listen threw: ' + e.message); }
-    guard.timer = setInterval(guardTick, 1000);
   },
   onRequest: function () {
     var req = readRequest();
+    if (!req) { log('rejected untrusted or malformed request'); return; }
+    if (!guard.timer) guard.timer = setInterval(guardTick, 1000);
     log('request: ' + (req.cmd || '?') + (req.app ? ' ' + req.app : ''));
     handle(req.cmd, req);
   },
-  onExit: function () { stop('helper exiting'); },
-  onStop: function () { stop('helper stopping'); }
+  onExit: function () { stop('helper exiting'); clearInterval(guard.timer); },
+  onStop: function () { stop('helper stopping'); clearInterval(guard.timer); }
 };
