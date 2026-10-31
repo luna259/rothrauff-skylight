@@ -1,12 +1,23 @@
 # Rothrauff Outdoor — Skylight fork
 
-A Samsung Tizen launcher with a retail screen that says **Rothrauff Outdoor**.
-Press Down or OK to show app controls; Back returns to the store display.
+A Samsung Tizen app with three illustrated showroom scenes and 16 locally bundled
+brand logos. Scenes rotate every 14 seconds: two e-bike selections and outdoor
+brands Navimow, NuCanoe, Maui Jim, Kamado Joe, and Masterbuilt.
+
+Left/Right changes scenes. Down or OK shows app controls. Back returns to the
+store display. No remote artwork or browser page is needed after installation.
 
 Security changes, remaining risks and rollback: [SECURITY.md](SECURITY.md).
+Fetch verified artwork: `python3 tools/fetch-store-brands.py`.
 Build: `python3 tools/build-widget.py`. Tests: `node --test tests/security.test.cjs`.
-Installation and exact-model behavior remain unverified until documented below.
-No SmartThings rules are created by this build or installer.
+Brand ownership is identified in the artwork source manifest; third-party logo
+binaries stay local and are not committed to this public fork.
+
+On the Samsung UN85U7900FDXZA, version 1.18.1 installed and the owner confirmed
+the original branded display. The Home-button return test failed: Samsung Home
+remained visible. This fork is an installed showroom app, not a verified default
+Home replacement. Automatic startup has not been configured. No SmartThings
+rules have been created.
 
 The following is the upstream guide. References to HTTP helper diagnostics,
 original packaging, automatic startup, and tested TVs describe upstream behavior;

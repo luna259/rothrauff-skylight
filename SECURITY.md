@@ -42,9 +42,16 @@ Remaining boundaries:
 Run `node --test tests/security.test.cjs` for the attack regression tests.
 Build the unsigned widget with `python3 tools/build-widget.py`.
 
-The initial retail screen says only “Rothrauff Outdoor.” Press Down or OK to
-show launcher controls. Press Back to return to the store display. Home-return
-and startup behavior require separate device verification.
+The retail screen cycles through three locally bundled showroom scenes with
+16 brand logos. Left/Right changes scenes. Down or OK shows launcher controls;
+Back returns to the store display. Artwork is verified against pinned hashes
+before packaging, with a source manifest and a separate fetching script.
+No network policy was widened to display logos.
+
+Device verification: the owner confirmed the original branded display after
+installing version 1.18.1 on Samsung UN85U7900FDXZA. Home-button return FAILED:
+Samsung Home stayed visible. Automatic startup remains unconfigured. Do not
+claim that this app is the TV's default Home replacement.
 
 Recovery: uninstall the Rothrauff Outdoor app from Samsung Apps Settings.
 No stock apps are removed or disabled. If optional cloud rules are ever added,

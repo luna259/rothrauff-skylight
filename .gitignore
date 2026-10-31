@@ -28,3 +28,7 @@ Thumbs.db
 *.pem
 *.key
 .env*
+
+# Locally bundled third-party store brand artwork
+skylight/brands/*
+!skylight/brands/sources.json
