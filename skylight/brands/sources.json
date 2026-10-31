@@ -1,0 +1,113 @@
+[
+  {
+    "brand": "cannondale",
+    "source": "https://download.logo.wine/logo/Cannondale_Bicycle_Corporation/Cannondale_Bicycle_Corporation-Logo.wine.png",
+    "file": "cannondale.png",
+    "bytes": 29875,
+    "sha256": "901a1dcafdd344666b2eb0d9fcb77f8e4aea3364e5877fe89c7dd0371277b727"
+  },
+  {
+    "brand": "himiway",
+    "source": "https://himiwaybike.com/cdn/shop/files/Logo_0f842c6f-da81-478d-9c7e-4b96492f9009.svg?v=1695112798&width=500",
+    "file": "himiway.svg",
+    "bytes": 1485,
+    "sha256": "e8813955ce607d8d7e104b0bf93a27e7ab374fee6f7687fde61f18813c51f1d7"
+  },
+  {
+    "brand": "velotric",
+    "source": "https://www.velotricbike.com/cdn/shop/files/logo_black.webp?v=1725529815&width=600",
+    "file": "velotric.png",
+    "bytes": 4483,
+    "sha256": "c372687124f9e8ccb05c2c1c149d7684c7cb5e7a5c87b46cbd78553af3d648fa"
+  },
+  {
+    "brand": "lectric",
+    "source": "https://lectricebikes.com/cdn/shop/files/logo-t.png?v=1722462393&width=600",
+    "file": "lectric.png",
+    "bytes": 17698,
+    "sha256": "b18286e3651e10a276dd71e75650a9a10ac8f84447b49619324518a314f5a751"
+  },
+  {
+    "brand": "bulls",
+    "source": "https://bullsbikesusa.com/cdn/shop/files/BULLS_logo_163x39@2x.jpg?v=1715720081",
+    "file": "bulls.jpg",
+    "bytes": 3329,
+    "sha256": "a6268afe97079e4ebc6a51fabf5e1ee0cc1c56a01e598893b3c3bb8e049f3c6c"
+  },
+  {
+    "brand": "urtopia",
+    "source": "https://ynxv91-ut.myshopify.com/cdn/shop/files/pandectes-banner-logo.png?v=1785017049452",
+    "file": "urtopia.png",
+    "bytes": 16185,
+    "sha256": "dedb621e92372db3a9e71e6b5134dfa4f575ab52d42b7e4acb9d720cdc1615bc"
+  },
+  {
+    "brand": "navimow",
+    "source": "https://navimow.com/cdn/shop/files/Property_1.svg?v=1762765220&width=500",
+    "file": "navimow.svg",
+    "bytes": 3882,
+    "sha256": "758c0fbf5b688a3cc5ef20a632014263b158ad2bc26fac9ce75902d6d8c7c865"
+  },
+  {
+    "brand": "nucanoe",
+    "source": "https://nucanoe.com/wp-content/uploads/NuCanoe-Logo_v2.png",
+    "file": "nucanoe.png",
+    "bytes": 25985,
+    "sha256": "646e00671b35345bac33d4517e27108f3e0a77f3b551cfb7da927284a0b2f998"
+  },
+  {
+    "brand": "maui-jim",
+    "source": "https://www.keringeyewear.com/dam/jcr:2e1037f2-a963-4003-b4ff-7379f2d3a726/LOGHI%20SITO.png",
+    "file": "maui-jim.png",
+    "bytes": 11493,
+    "sha256": "dc0e29793110f2f6a2899658ce89a69afd155e87ae67c43138f0d8e08fbf216e"
+  },
+  {
+    "brand": "aima",
+    "source": "https://www.aimatech.us/cdn/shop/files/aima-eng-logo-full-color-cmyk_aima-eng-logo-full-color-cmyk.png?v=1684794150&width=500",
+    "file": "aima.png",
+    "bytes": 25667,
+    "sha256": "2d8397b5864424af339641f843ecb430112ece415e6daf2f1b748b68cef54020"
+  },
+  {
+    "brand": "bakcou",
+    "source": "https://bakcou.com/cdn/shop/files/Bakcou_Fat_Tire_eBike_Logo.png?v=1725973767&width=500",
+    "file": "bakcou.png",
+    "bytes": 6324,
+    "sha256": "3919d2925478683290b3c9f517345a2f3af12b4e63ba88ba6d07f91bcae47575"
+  },
+  {
+    "brand": "addmotor",
+    "source": "https://www.addmotor.com/u_file/2503/photo/addmotor-logo_1743392447.png",
+    "file": "addmotor.png",
+    "bytes": 4608,
+    "sha256": "d812f0df19eca6629f12c95696218ea8c7fd5f188cb4d25db67b8b7c1e802cea"
+  },
+  {
+    "brand": "segway",
+    "source": "https://www.segway.com/content/dam/segway-ninebot/general/general/icon/segway_logo_new.png",
+    "file": "segway.png",
+    "sha256": "e308030aedce6ee421bb42eb6286969509feaf764d12f4a86fd707afe59aefc3"
+  },
+  {
+    "brand": "magnum",
+    "source": "https://magnumbikes.com",
+    "file": "magnum.svg",
+    "inline_svg": true,
+    "sha256": "a4b731a33d2ca9aabef9b6c7815c4cebaa88aed8a37ed416fcdce678213895ec"
+  },
+  {
+    "brand": "kamado-joe",
+    "source": "https://www.kamadojoe.com",
+    "file": "kamado-joe.svg",
+    "inline_svg": true,
+    "sha256": "0b0bb76708b5b30511b9922e07a2fe0b74eb85f32d617dfaf55d1d42998186ff"
+  },
+  {
+    "brand": "masterbuilt",
+    "source": "https://www.masterbuilt.com",
+    "file": "masterbuilt.svg",
+    "inline_svg": true,
+    "sha256": "3d115d9dd81c0d94315cab28439b9039826abd0fc1efb2b7d2c3b6073366a6b2"
+  }
+]
