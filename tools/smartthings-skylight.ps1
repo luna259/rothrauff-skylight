@@ -27,7 +27,8 @@ param(
   [string]$Execute,    # run a rule now, by id (tests its conditions and its launch command on demand)
   [string]$Capability, # print a capability's attribute definitions, e.g. samsungvd.thingStatus
   [string]$AppId = 'skylightTV.Skylight',
-  [string]$TvName = '',  # the TV's name in SmartThings; leave empty to pick the first TV found
+  [Parameter(Mandatory=$true)][ValidatePattern('^[0-9a-fA-F-]{36}$')][string]$DeviceId,
+  [string]$TvName = ''
   [int]$DelaySeconds = 8
 )
 $ErrorActionPreference = 'Stop'
@@ -47,28 +48,26 @@ function Call([string]$method, [string]$path, $body) {
   $args = @{ Method = $method; Uri = "$api$path"; Headers = $headers }
   if ($body -ne $null) { $args.Body = ($body | ConvertTo-Json -Depth 20 -Compress) }
   try {
-    return Invoke-RestMethod @args
+    return Invoke-RestMethod @args -MaximumRedirection 0
   } catch {
     $resp = $_.Exception.Response
     $detail = ''
     if ($_.ErrorDetails -and $_.ErrorDetails.Message) { $detail = $_.ErrorDetails.Message }
     elseif ($resp) { try { $detail = (New-Object IO.StreamReader($resp.GetResponseStream())).ReadToEnd() } catch {} }
     $code = if ($resp) { $resp.StatusCode.value__ } else { '?' }
-    if ($body -ne $null) { Write-Host "Request body was:`n$($body | ConvertTo-Json -Depth 20)" }
-    throw "SmartThings answered $code for $method $path`n$detail"
+    throw "SmartThings request failed (HTTP $code)."
   }
 }
 
 # ---- Find the TV ------------------------------------------------------------------------------
-$devices = (Call GET '/devices').items
-$tv = $null
-if ($TvName) { $tv = $devices | Where-Object { $_.label -eq $TvName } | Select-Object -First 1 }
-if (-not $tv) {
-  # A Samsung TV exposes the app-launch capability; prefer that over guessing from the name.
-  $tv = $devices | Where-Object { @($_.components | ForEach-Object { $_.capabilities.id }) -contains 'custom.launchapp' } | Select-Object -First 1
-}
-if (-not $tv) { $tv = $devices | Where-Object { "$($_.deviceTypeName) $($_.name) $($_.label)" -match 'TV' } | Select-Object -First 1 }
-if (-not $tv) { 'No TV found. Devices on this account:'; $devices | ForEach-Object { "  $($_.label)  [$($_.deviceId)]  $($_.deviceTypeName)" }; exit 1 }
+# Never guess a target from a name or silently select the first account device.
+$tv = Call GET "/devices/$DeviceId"
+if (-not $tv -or $tv.deviceId -ne $DeviceId) { throw 'The selected device was not returned.' }
+if ($TvName -and $tv.label -ne $TvName) { throw 'The selected device name does not match.' }
+if ($tv.locationId -notmatch '^[0-9a-fA-F-]{36}$') { throw 'Invalid location ID.' }
+if ($AppId -notmatch '^[A-Za-z0-9_][A-Za-z0-9_.-]{0,127}$') { throw 'Invalid app ID.' }
+if ($Execute -and $Execute -notin @('poweron','checkin') -and $Execute -notmatch '^[0-9a-fA-F-]{36}$') { throw 'Invalid rule ID.' }
+if ($DeleteRule -and $DeleteRule -notin @('poweron','checkin') -and $DeleteRule -notmatch '^[0-9a-fA-F-]{36}$') { throw 'Invalid rule ID.' }
 "TV: $($tv.label)  id $($tv.deviceId)  location $($tv.locationId)"
 
 $caps = @()
